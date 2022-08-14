@@ -21,12 +21,13 @@ chrome.storage.onChanged.addListener(function (changes, area) {
     allButtons.forEach(function (item, index) {
         item.style.backgroundColor = "orange";
         item.classList.add("scanner-selected");
+        item.style.zIndex = "100";
     })
 
-    let theRest = document.querySelectorAll("body > div:not(.scanner-selected)");
-    theRest.forEach(function (item, index) {
-        item.style.opacity = "0.5";
-    })
+    var whiteBackdrop = document.createElement('div');
+    document.body.appendChild(whiteBackdrop);
+    whiteBackdrop.style.cssText = 'position:sticky;width:100vw;height:100vh;opacity:0.3;z-index:90;background-color:#ffffff;';
+
     // press buttons
 
     // take GET Request headers
