@@ -4,21 +4,29 @@ import Greetings from '../../containers/Greetings/Greetings';
 import './Popup.css';
 
 const Popup = () => {
+  let count = 0;
+
+  let startScan = (e) => {
+    e.preventDefault();
+    console.log("button clicked" + count);
+
+    chrome.storage.sync.set({ buttonClick: count }, function () {
+      // when set runs
+      console.log(count + 'sent to storage')
+    });
+    count++;
+  }
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/pages/Popup/Popup.jsx</code> and save to reload.
+          Click here to scan your website!
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!
-        </a>
+        <button type="button" onClick={startScan}>
+          Scan!
+        </button>
       </header>
     </div>
   );
