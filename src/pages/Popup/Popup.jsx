@@ -4,28 +4,42 @@ import Greetings from '../../containers/Greetings/Greetings';
 import './Popup.css';
 
 const Popup = () => {
-  let count = 0;
+  let scannerOn = false;
 
   let startScan = (e) => {
     e.preventDefault();
-    console.log("button clicked" + count);
+    if (scannerOn == false) {
+      scannerOn = true;
 
-    chrome.storage.sync.set({ buttonClick: count }, function () {
-      // when set runs
-      console.log(count + 'sent to storage')
-    });
-    count++;
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        let url = tabs[0].url;
+
+        chrome.tabs.sendMessage(tabs[0].id, { buttonType: "startScan", urlLink: url }, (response) => {
+          console.log(response.message);
+        });
+      });
+    } else {
+      scannerOn = false;
+
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { buttonType: "stopScan" }, (response) => {
+          console.log(response.message);
+        });
+      });
+    }
+
+
+
   }
 
   return (
-    <div className="App">
+    <div className="App-background">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
           Click here to scan your website!
         </p>
         <button type="button" onClick={startScan}>
-          Scan!
+          <span>{scannerOn ? 'Turn Off' : 'Scan'}</span>
         </button>
       </header>
     </div>

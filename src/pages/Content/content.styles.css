@@ -1,0 +1,10 @@
+.yj-overlay {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    color: red;
+    z-index: 110;
+    background-color: aliceblue;
+}
