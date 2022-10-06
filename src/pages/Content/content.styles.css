@@ -8,3 +8,40 @@
     z-index: 110;
     background-color: aliceblue;
 }
+
+.button-close {
+    background-color: rgb(220, 220, 220);
+    color: black;
+    height: auto;
+    margin: 10px;
+    border: none;
+    border-radius: 50px;
+    padding: 10px;
+    transition: 0.5s ease all;
+}
+
+.animate-all {
+    transition: 0.5s ease all;
+}
+
+.button-close:hover {
+    background-color: rgb(255, 101, 101);
+    transition: 0.5s ease all;
+    font-size: 20px;
+}
+
+.linkOverlay {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: block;
+    font-size: 16px;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    max-width: 250px;
+    height: auto;
+    background-color: grey;
+    border-radius: 5px;
+    padding: 5px;
+    transition: 1s ease all;
+}
