@@ -109,7 +109,8 @@ chrome.runtime.onMessage.addListener(
                 // highlight all ads
                 let allAds = document.querySelectorAll("[id*='ads'], [id*='ad']");
                 allAds.forEach(function (item, index) {
-                    item.classList.add("ad-selected animate-all");
+                    item.classList.add("ad-selected");
+                    item.classList.add("animate-all");
                     console.log(item)
 
                     let newAdOverlay = document.createElement("div");
@@ -140,14 +141,23 @@ chrome.runtime.onMessage.addListener(
                         closingDiv.style.cssText = `position: absolute; display: block; width: 100%, height: 100%; font-size: 50px`;
 
                         const closeButton2 = document.createElement("button");
-                        closeButton2.innerHTML = "Close it really :(";
+                        closeButton2.innerHTML = "Close it";
+
+                        const openButton2 = document.createElement("button");
+                        openButton2.innerHTML = "Open it back"
 
                         parentDiv.appendChild(closingDiv)
                         closingDiv.appendChild(closeText);
                         closingDiv.appendChild(closeButton2)
+                        closingDiv.appendChild(openButton2)
 
                         closeButton2.onclick = function () {
                             item.style.opacity = "0";
+                        }
+
+                        openButton2.onclick = function () {
+                            closingDiv.style.opacity = "0";
+                            item.style.transform = "scale(2,2)";
                         }
 
                     }
@@ -156,8 +166,58 @@ chrome.runtime.onMessage.addListener(
 
                 break;
 
-            case 'startScan':
+            // case 'startPriceScan':
+            //     sendResponse({ message: "Starting Price Scan" });
+            //     currentURL = window.location.host;
+
+            //     // const matches = [];
+            //     // let text = "$";
+            //     // // highlight all low prices
+            //     // for (const div of document.querySelectorAll('div')) {
+            //     //     if (div.textContent.includes(text)) {
+            //     //         console.log(matches)
+            //     //     }
+            //     // }
+
+            //     break;
+
+            case 'startYouTubeScan':
+                sendResponse({ message: "Starting YouTube Thumbnail Scan" });
+                currentURL = window.location.host;
+
+                let allThumbnails = document.querySelectorAll("[src*='i.ytimg.com']");
+                allThumbnails.forEach(function (item, index) {
+                    console.log(item)
+                })
+
+                break;
+
+            case 'startRedditScan':
+                sendResponse({ message: "Starting Reddit Comment Sentiment Analysis" });
+                currentURL = window.location.host;
+
+                let allCommentButtons = document.querySelectorAll("[data-click-id*='comments']");
+                allCommentButtons.forEach(function (item, index) {
+                    console.log(item)
+                })
+
+                break;
+
+            //Stop scans
+            case 'stopScan':
                 sendResponse({ message: "stopping scan" });
+                break;
+
+            case 'stopAdScan':
+                sendResponse({ message: "stopping Ad scan" });
+                break;
+
+            case 'stopYouTubeScan':
+                sendResponse({ message: "stopping YouTube scan" });
+                break;
+
+            case 'stopRedditScan':
+                sendResponse({ message: "stopping Reddit scan" });
                 break;
 
             default:
