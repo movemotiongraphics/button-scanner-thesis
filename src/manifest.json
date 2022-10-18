@@ -19,7 +19,9 @@
     "webRequestBlocking",
     "<all_urls>",
     "activeTab",
-    "tabs"
+    "tabs",
+    "alarms",
+    "notifications"
   ],
   "content_scripts": [
     {

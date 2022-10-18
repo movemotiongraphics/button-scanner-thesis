@@ -5,6 +5,13 @@ console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
 
 let currentURL;
+let leftoverTime = 0;
+
+function genRand(min, max, decimalPlaces) {
+    var rand = Math.random() * (max - min) + min;
+    var power = Math.pow(10, decimalPlaces);
+    return Math.floor(rand * power) / power;
+}
 
 //get buttonclick
 chrome.runtime.onMessage.addListener(
@@ -117,14 +124,6 @@ chrome.runtime.onMessage.addListener(
                     newAdOverlay.classList.add("linkOverlay");
                     item.appendChild(newAdOverlay);
 
-                    //get random $$
-
-                    function genRand(min, max, decimalPlaces) {
-                        var rand = Math.random() * (max - min) + min;
-                        var power = Math.pow(10, decimalPlaces);
-                        return Math.floor(rand * power) / power;
-                    }
-
                     const linkText = document.createTextNode(`${genRand(500, 1000, 0)} has blocked this ad and it costed the company $${genRand(500, 1000, 2)} :(`);
                     newAdOverlay.appendChild(linkText);
 
@@ -166,28 +165,23 @@ chrome.runtime.onMessage.addListener(
 
                 break;
 
-            // case 'startPriceScan':
-            //     sendResponse({ message: "Starting Price Scan" });
-            //     currentURL = window.location.host;
-
-            //     // const matches = [];
-            //     // let text = "$";
-            //     // // highlight all low prices
-            //     // for (const div of document.querySelectorAll('div')) {
-            //     //     if (div.textContent.includes(text)) {
-            //     //         console.log(matches)
-            //     //     }
-            //     // }
-
-            //     break;
-
             case 'startYouTubeScan':
                 sendResponse({ message: "Starting YouTube Thumbnail Scan" });
                 currentURL = window.location.host;
 
-                let allThumbnails = document.querySelectorAll("[src*='i.ytimg.com']");
+                let allThumbnails = document.querySelectorAll("[id='details']");
                 allThumbnails.forEach(function (item, index) {
                     console.log(item)
+
+                    item.classList.add("thumbnail-selected-yj");
+
+                    let newAdCounter = document.createElement("div");
+                    newAdCounter.classList.add("thumbnailAdCount");
+                    item.appendChild(newAdCounter);
+
+                    const linkText = document.createTextNode(`${genRand(0, 10, 0)} Ads`);
+                    newAdCounter.appendChild(linkText);
+
                 })
 
                 break;
@@ -199,8 +193,56 @@ chrome.runtime.onMessage.addListener(
                 let allCommentButtons = document.querySelectorAll("[data-click-id*='comments']");
                 allCommentButtons.forEach(function (item, index) {
                     console.log(item)
+
+                    item.classList.add("comment-selected-yj");
+
+                    let newCommentCounter = document.createElement("div");
+                    newCommentCounter.classList.add("commentSentiment");
+                    item.appendChild(newCommentCounter);
+
+                    let sentimentArray = ['🤬', '😀', '🥺', '😜']
+
+                    const linkText = document.createTextNode(`Mostly ${sentimentArray[Math.floor(Math.random() * sentimentArray.length)]} comments here`);
+                    newCommentCounter.appendChild(linkText);
                 })
 
+                break;
+
+            case 'startInstagramScan':
+                sendResponse({ message: "Removing Instagram Photos" });
+                currentURL = window.location.host;
+
+                let allInstagramPhotos = document.querySelectorAll("[class*='_aatk']");
+                allInstagramPhotos.forEach(function (item, index) {
+                    console.log(item)
+
+                    item.classList.add("ig-photo-selected");
+
+                    item.style.height = "0px";
+                    window.stop();
+                })
+
+                break;
+
+            case 'setTimerOverlay':
+                if (request.alarmTime > 0) {
+                    leftoverTime++;
+                    let newTime = request.alarmTime - leftoverTime;
+                    sendResponse({ message: `On screen timer overlay is started with ${newTime + 1} seconds left` });
+
+                    if (leftoverTime > 1) {
+                        let alertHeader = document.querySelector("#top-header-yj");
+                        alertHeader.innerHTML = `You have ${newTime + 1} minutes to slack left... :)`;
+                    } else {
+                        let alertHeader = document.createElement('div');
+                        alertHeader.id = "top-header-yj";
+                        alertHeader.classList.add("topHeader")
+
+                        const linkText = document.createTextNode(`You have ${newTime + 1} minutes to slack left... :)`);
+                        alertHeader.appendChild(linkText);
+                        document.body.insertBefore(alertHeader, document.body.firstChild);
+                    }
+                }
                 break;
 
             //Stop scans
